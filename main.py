@@ -2,6 +2,10 @@ from typing import List
 
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
+from langchain.agents import create_agent
+from langchain_core.messages import HumanMessage
+from langchain_openai import ChatOpenAI
+from langchain_tavily import TavilySearch
 
 load_dotenv()
 
@@ -18,6 +22,11 @@ class AgentResponse(BaseModel):
         default_factory=list,
         description="List of sources used to generate the answer",
     )
+
+
+llm = ChatOpenAI(model="gpt-5")
+tools = [TavilySearch()]
+agent = create_agent(model=llm, tools=tools, response_format=AgentResponse)
 
 
 def main():
